@@ -9,9 +9,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  //判断是否是第一页，并把请求的页数转换成number类型
   var page = req.query.p ? parseInt(req.query.p) : 1;
-  //查询并返回第page页的10篇文章
   Post.getTen(null,page,function(err,posts,total){
   	if(err){
   		posts = [];
@@ -45,13 +43,10 @@ router.post('/reg', function(req, res) {
   var name = req.body.name,
       password = req.body.password,
       password_re = req.body['password-repeat'];
-  //检验用户两次输入的密码是否一致
   if(password_re != password){
   	req.flash('error','两次输入的密码不一致!');
   	return res.redirect('/reg');
   }
-
-  //生成md5的值
   var md5 = crypto.createHash('md5'),
       password = md5.update(req.body.password).digest('hex');
   var newUser = new User({
@@ -59,7 +54,6 @@ router.post('/reg', function(req, res) {
   	  password : password,
   	  email : req.body.email
   });
-  //检查用户名是否已经存在
   User.get(newUser.name,function(err,user){
   	if(user){
   		req.flash('error','用户已存在!');
@@ -92,19 +86,15 @@ router.post('/login',checkNotlogin);
 router.post('/login', function(req, res) {
   var md5 = crypto.createHash('md5'),
       password = md5.update(req.body.password).digest('hex');
-  //检测用户是否存在
   User.get(req.body.name,function(err,user){
   	  if(!user){
   	  	req.flash('error','用户不存在!');
   	  	return res.redirect('/login');
   	  }
-  	  //检查密码是否一致
   	  if(user.password != password){
   	  	req.flash('error','密码错误!');
   	  	return res.redirect('/login');
   	  }
-
-  	  //匹配后将信息存入session
   	  req.session.user = user;
   	  req.flash('success','登录成功!');
   	  res.redirect('/');
@@ -250,15 +240,12 @@ router.get('/search',function(req,res){
 })
 
 router.get('/u/:name',function(req,res){
-  //判断是否是第一页，并把请求的页数转换成number类型
   var page = req.query.p ? parseInt(req.query.p) : 1;
-  //检查用户是否存在
   User.get(req.params.name,function(err,user){
     if(!user){
       req.flash('error','用户名不存在!');
       return res.redirect('/');
     }
-    //查询并返回该用户第page页的10篇文章
     Post.getTen(user.name,page,function(err,posts,total){
       if(err){
         req.flash('error',err);
@@ -345,10 +332,10 @@ router.post('/edit/:name/:day/:title',function(req,res){
     var url = '/u/' + req.params.name + '/' + req.params.day + '/' + req.params.title;
     if(err){
       req.flash('error',err);
-      return res.redirect(url);//返回文章页
+      return res.redirect(url);
     }
     req.flash('success','修改成功!');
-    res.redirect(url);//返回文章页
+    res.redirect(url);
   })
 });
 
@@ -381,7 +368,7 @@ function checkLogin(req,res,next){
 function checkNotlogin(req,res,next){
 	if(req.session.user){
 		req.flash('error','已登录!');
-		res.redirect('back') //返回之前的页面
+		res.redirect('back')
 	}
 	next();
 }
