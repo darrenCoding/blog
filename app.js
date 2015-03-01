@@ -1,8 +1,8 @@
 var express = require('express');
 var path = require('path');
 var session = require('express-session');
-var MongoStore = require('connect-mongo')(session); //将session存储到数据库中
-var settings = require('./setting');//默认的设置
+var MongoStore = require('connect-mongo')(session); 
+var settings = require('./setting');
 var flash =require('connect-flash');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -25,16 +25,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({
     secret: settings.cookieSecret,
-    key:settings.db, //cookie的名字
-    cookie:{maxAge:1000 * 60 * 60 * 24 * 30},//有效期是30天
+    key:settings.db,
+    cookie:{maxAge:1000 * 60 * 60 * 24 * 30},
     store: new MongoStore({
         url: settings.url
     }),
-    resave: false, //don't save session if unmodified
-    saveUninitialized: false // don't create session until something stored
+    resave: false, 
+    saveUninitialized: false 
 }));
 app.use(flash());
-//app.use(session())在app.use(flash())前边，app.use(flash())在app.use(app.router)前边，这三个顺序正确了，基本就没有什么问题了
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
