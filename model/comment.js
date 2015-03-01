@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
-var settings = require('../setting');//默认的设置
+var settings = require('../setting');
 function Comment(name,day,title,comment){
 	this.name = name;
 	this.day = day;
