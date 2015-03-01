@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var markdown = require('markdown').markdown;
 var async = require('async');
-var settings = require('../setting'); //默认的设置
+var settings = require('../setting'); 
 
 function Post(name, head, title, tags, post) {
     this.name = name;
@@ -13,7 +13,6 @@ function Post(name, head, title, tags, post) {
 
 module.exports = Post;
 
-//存储一篇文章及相关信息
 Post.prototype.save = function(callback) {
     var date = new Date();
     var time = {
@@ -69,7 +68,6 @@ Post.prototype.save = function(callback) {
     })
 }
 
-//读取十篇文章
 Post.getTen = function(name, page, callback) {
     async.waterfall([
         function(cb){
@@ -121,7 +119,6 @@ Post.getTen = function(name, page, callback) {
     })
 }
 
-//获取一篇文章
 Post.getOne = function(name, day, title, callback) {
     async.waterfall([
         function(cb){
@@ -190,7 +187,6 @@ Post.getOne = function(name, day, title, callback) {
     })
 }
 
-//返回原始发表的内容(markdown格式)
 Post.edit = function(name, day, title, callback) {
     MongoClient.connect(settings.url, function(err, db) {
         if (err) {
@@ -217,7 +213,6 @@ Post.edit = function(name, day, title, callback) {
     })
 }
 
-//更新一篇文章及其相关信息
 Post.update = function(name, day, title, post, callback) {
     MongoClient.connect(settings.url, function(err, db) {
         if (err) {
@@ -276,7 +271,6 @@ Post.remove = function(name, day, title, callback) {
     })
 }
 
-//返回所有存档
 Post.getArchive = function(callback) {
     MongoClient.connect(settings.url, function(err, db) {
         if (err) {
@@ -305,7 +299,6 @@ Post.getArchive = function(callback) {
     })
 }
 
-//返回所有标签
 Post.getTags = function(callback) {
     MongoClient.connect(settings.url, function(err, db) {
         if (err) {
@@ -328,7 +321,6 @@ Post.getTags = function(callback) {
     })
 }
 
-//返回含有特定标签的所有文章
 Post.getTag = function(tag, callback) {
     MongoClient.connect(settings.url, function(err, db) {
         if (err) {
@@ -361,7 +353,6 @@ Post.getTag = function(tag, callback) {
     })
 }
 
-//返回通过标题字关键查询的所有文章信息
 Post.search = function(keyword, callback) {
     MongoClient.connect(settings.url, function(err, db) {
         if (err) {
